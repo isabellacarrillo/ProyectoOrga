@@ -27,6 +27,17 @@ Ingrese la cota de la pintura (Debe contener 4 letras mayusculas seguidas de 4 n
             elif cota[4] not in self.numeros or cota[5] not in self.numeros or cota[6] not in self.numeros or cota[7] not in self.numeros:
                 print("Error.")
                 continue
+            elif self.pinturas != []:
+                comprobar = 0
+                for i in range(len(self.pinturas)):
+                    if cota == self.pinturas[i].getCota():
+                        print("Error. 2 pinturas no deben tener la misma cota.")
+                        comprobar = 1
+                        break
+                if comprobar == 0:
+                    break
+                elif comprobar == 1:
+                    continue
             else:
                 break
 
@@ -42,13 +53,22 @@ Ingrese el nombre de la pintura que desea ingresas (debe contener maximo 10 cara
 
             for i in range(len(nombre)):
                 if nombre[i] not in self.letras:
-                    print("Error. El nombre no debe contener numeros.")
+                    print("Error. El nombre no debe contener numeros, letras minusculas o caracteres especiales.")
                     comprobar = 0
                     break
 
-            if comprobar == 0:
+            comprobar1 = 1
+
+            if self.pinturas != []:
+                for i in range(len(self.pinturas)):
+                    if nombre == self.pinturas[i].getNombre():
+                        print("Error. Dos pinturas no deben tener el mismo nombre.")
+                        comprobar1 = 0
+                        break
+
+            if comprobar == 0 or comprobar1 == 0:
                 continue
-            elif comprobar == 1:
+            else:
                 break
 
         while True:
@@ -80,10 +100,11 @@ Ingrese el año en que se realizo la pintura:
                 continue
 
         self.pinturas.append(PinturaActiva(cota,nombre,precio,year))
+        self.pinturasactivas.append(PinturaActiva(cota,nombre,precio,year))
 
     def consultar_pintura(self):
         comprobar = 0
-        if self.pinturas == []:
+        if self.pinturasactivas == [] and self.pinturasmantenimiento == []:
             print("No se encuentra ninguna pintura registrada en este momento.")
         else:
             while True:
@@ -113,7 +134,7 @@ Ingrese el año en que se realizo la pintura:
                                         continue
                                     elif self.pinturas[i].getCota() == opcion1:
                                         comprobar = 1
-                                        self.pinturas[i].getInfo()
+                                        print(self.pinturas[i].getInfo())
                                 if comprobar == 0:
                                     print("No se ha registrado ninguna pintura con la cota que ha introducido.")
                                 break
@@ -140,11 +161,65 @@ Ingrese el año en que se realizo la pintura:
                                     continue
                                 elif self.pinturas[i].getNombre() == opcion1:
                                     comprobar = 1
-                                    self.pinturas[i].getInfo()
+                                    print(self.pinturas[i].getInfo())
                             if comprobar == 0:
                                 print("No se ha registrado ninguna pintura con este nombre.")
                             break
                         break
+
+    def cambiar_status(self):
+        while True:
+            opcion = input("""\nIngrese el numero correspondiente a la accion que desea realizar:
+1. Cambiar el status de una pintura en exhibicion a una en mantenimiento.
+2. Cambiar el status de una pintura en mantenimiento a una en exhibicion.
+>>> """)
+            if opcion != "1" and opcion != "2":
+                print("Error. ")
+                continue
+            else:
+                if opcion == "1":
+                    if self.pinturasactivas == []:
+                        print("No se encuentran pinturas en exhibicion actualmente")
+                        break
+                    else:
+                        print("A continuacion se le mostrara las pinturas que se encuentra actualmente en exhibicion:\n")
+                        for i in range(len(self.pinturasactivas)):
+                            print(f"{i+1}. {self.pinturasactivas[i].getInfo()}")
+                        try:
+                            opcion1 = int(input("\nIngrese el numero correspondiente a la pintura que desea colocar en mantenimiento:\n>>> "))
+                            pintura = self.pinturasactivas[opcion1-1]
+                            self.pinturasmantenimiento.append(PinturaMantenimiento(pintura.getCota(),pintura.getNombre(),pintura.getPrecio(),pintura.getYear()))
+                            self.pinturasactivas.remove(pintura)
+                            for i in range(len(self.pinturas)):
+                                if pintura.getNombre() == self.pinturas[i].getNombre():
+                                    self.pinturas.remove(self.pinturas[i])
+                                    self.pinturas.append(PinturaMantenimiento(pintura.getCota(),pintura.getNombre(),pintura.getPrecio(),pintura.getYear()))
+                            break
+                        except:
+                            print("Error. Debe ingresar un numero valido.")
+                            continue
+                elif opcion == "2":
+                    if self.pinturasmantenimiento == []:
+                        print("No se encuentran pinturas en mantenimiento actualmente")
+                        break
+                    else:
+                        print("A continuacion se le mostrara las pinturas que se encuentra actualmente en mantenimiento:\n")
+                        for i in range(len(self.pinturasmantenimiento)):
+                            print(f"{i+1}. {self.pinturasmantenimiento[i].getInfo()}")
+                        try:
+                            opcion1 = int(input("\nIngrese el numero correspondiente a la pintura que desea colocar en exhibicion:\n>>> "))
+                            pintura = self.pinturasmantenimiento[opcion1-1]
+                            self.pinturasactivas.append(PinturaActiva(pintura.getCota(),pintura.getNombre(),pintura.getPrecio(),pintura.getYear()))
+                            self.pinturasmantenimiento.remove(pintura)
+                            for i in range(len(self.pinturas)):
+                                if pintura.getNombre() == self.pinturas[i].getNombre():
+                                    self.pinturas.remove(self.pinturas[i])
+                                    self.pinturas.append(PinturaActiva(pintura.getCota(),pintura.getNombre(),pintura.getPrecio(),pintura.getYear()))
+                            break
+                        except:
+                            print("Error. Debe ingresar un numero valido.")
+                            continue
+                break
 
     def escribir_objetos(self,archivo,datos):
         escribir = open(archivo,"wb")
@@ -168,7 +243,9 @@ Ingrese el año en que se realizo la pintura:
         self.pinturas = self.leer_objetos("pinturas.pickle", self.pinturas)
 
     def start(self):
-        self.leer_datos()
+#        self.leer_datos()
+        for i in range(len(self.pinturas)):
+            print(self.pinturas[i].getInfo())
         print("BIENVENIDO AL MUSEO SAMAN")
 
         while True:
@@ -193,7 +270,7 @@ Ingrese el numero correspondiente a la accion que desea realizar:
                     self.consultar_pintura()
 
                 elif opcion == "3":
-                    continue
+                    self.cambiar_status()
 
                 elif opcion == "4":
                     continue

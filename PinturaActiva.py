@@ -22,7 +22,7 @@ class PinturaActiva(Pintura):
         return self.status
 
     def getInfo(self):
-        print("""  
+        return("""  
 {}
 
 Cota: {}
