@@ -1,8 +1,9 @@
 class Pintura:
-    def __init__(self, cota, nombre, precio, año, status, eliminado):
+    def __init__(self, cota, nombre, precio, ano, status, eliminado):
         self.cota = cota
         self.nombre = nombre
         self.precio = precio
-        self.año = año
+        self.ano = ano
         self.status = status
         self.eliminado = eliminado
+          
