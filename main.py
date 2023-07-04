@@ -3,7 +3,7 @@ from funciones import *
 def main():
 
     lista_pinturas,lista_ordenada_nombre,lista_ordenada_cota = descifrar_txt()
-    print(lista_ordenada_cota, lista_ordenada_nombre)
+    print("Lista inicial de cotas: "  + str(lista_ordenada_cota) + "\nLista inicial de nombres: " + str(lista_ordenada_nombre))
     
     while True:
 

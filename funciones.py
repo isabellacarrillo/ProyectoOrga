@@ -15,6 +15,8 @@ def leer_txt():
         contenido = archivo.read()
     return contenido
 
+
+
 def descifrar_txt():
     contenido=leer_txt()
     lista_pinturas = []
@@ -36,6 +38,7 @@ def descifrar_txt():
     return lista_pinturas,lista_ordenada_nombre,lista_ordenada_cota
 
 
+#Sirve.
 def insertar_ordenado(lista_ordenada, nodo):
     if len(lista_ordenada) == 0:
         lista_ordenada.append(nodo)
@@ -71,7 +74,7 @@ def agregar_obra(lista_pinturas,lista_ordenada_nombre,lista_ordenada_cota):
     while True:
         nombre = input("Ingrese el nombre de la pintura: ")
         nombre = nombre.upper()
-        verificacion = busqueda_binaria(lista_ordenada_cota , nombre)
+        verificacion = busqueda_binaria(lista_ordenada_nombre , nombre)
         if verificacion == -1:
             if len(nombre) < 10:
                 break
